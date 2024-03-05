@@ -1,19 +1,6 @@
 import java.util.*;
 
-class Friend {
-    int in;     // 선물 받음
-    int out;
-    
-    public Friend(int i, int o) {
-        in = i;
-        out = o;
-    }
-}
-
 class Solution {
-    static int[] ans;
-    static int[] point;
-    
     public int solution(String[] friends, String[] gifts) {
         /**
         * 기록이 있다면, 이번 달까지 두 사람 사이에 더 많은 선물을 준 사람이 "다음 달"에 선물을 하나 받음
@@ -29,7 +16,7 @@ class Solution {
         int n = friends.length;
         Map<String, Integer> map = new HashMap<>();  // 이름-인덱스 매핑
         int[][] table = new int[n][n];  // 주고 받은 선물
-        point = new int[n];
+        int[] point = new int[n];
         
         int idx = 0;
         for(String f : friends) {
@@ -47,40 +34,18 @@ class Solution {
             point[reciver]--;   // 받은 선물의 수
         }
         
-        ans = new int[n];
+        int ans = 0;
         for(int sndr = 0; sndr < n; sndr++) {
+            int cnt = 0;
             for(int rcv = 0; rcv < n; rcv++) {
-                int sender = table[sndr][rcv];
-                int reciver = table[rcv][sndr];
-            
-                if(sndr != rcv) {
-                    if(sender == 0 && reciver == 0) {   // 주고 받은 기록이 하나도 없다면
-                        getGift(sndr, rcv);     // 선물 지수가 큰 사람이 받음
-                    } else if(sender > 0 || reciver > 0) { // 주고 받은 기록이 있다면
-                        if(sender == reciver) { // 주고 받은 수가 같다면
-                            getGift(sndr, rcv);
-                        } // 이번 달까지 두 사람 사이에 더 많은 선물을 준 사람이 "다음 달"에 선물을 하나 받음
-                        else if(sender > reciver) {
-                            ans[sndr]++;
-                        } else {
-                            ans[rcv]++;
-                        }
-                    }
-                    
-                }
+                if(sndr == rcv) continue;
+                if(table[sndr][rcv] > table[rcv][sndr]) cnt++; 
+                else if(table[sndr][rcv] == table[rcv][sndr] && point[sndr] > point[rcv]) cnt++;
             }
+            System.out.println(sndr + " " + cnt);
+            ans = Math.max(ans, cnt);
         }
         
-        Arrays.sort(ans);
-        
-        return ans[n-1] / 2;    // 위 로직에서 두 번씩 체크되기 때문에 2로 나눔
-    }
-    
-    public void getGift(int a, int b) {
-        if(point[a] > point[b]) {  
-            ans[a]++;
-        } else if(point[a] < point[b]) {
-            ans[b]++;
-        }
+        return ans;    // 위 로직에서 두 번씩 체크되기 때문에 2로 나눔
     }
 }
