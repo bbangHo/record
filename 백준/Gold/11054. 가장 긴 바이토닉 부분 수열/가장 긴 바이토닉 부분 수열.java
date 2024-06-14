@@ -9,7 +9,6 @@ public class Main {
 
         int n = Integer.parseInt(br.readLine());
         int[] arr = new int[n];
-        int[] r_arr = new int[n];
         int[] dp = new int[n];
         int[] r_dp = new int[n];
         Arrays.fill(dp, 1);
@@ -18,7 +17,6 @@ public class Main {
         StringTokenizer st = new StringTokenizer(br.readLine());
         for (int i = 0; i < n; i++) {
             arr[i] = Integer.parseInt(st.nextToken());
-            r_arr[n - 1 - i] = arr[i];
         }
 
         for (int i = 0; i < n; i++) {
@@ -29,10 +27,12 @@ public class Main {
                     dp[i] = max + 1;
                 }
             }
+        }
 
-            max = 0;
-            for (int j = i - 1; j >= 0; j--) {
-                if (r_arr[j] < r_arr[i]) {
+        for (int i = n - 1; i >= 0 ; i--) {
+            int max = 0;
+            for (int j = i + 1; j < n; j++) {
+                if (arr[j] < arr[i]) {
                     max = Math.max(max, r_dp[j]);
                     r_dp[i] = max + 1;
                 }
@@ -41,7 +41,7 @@ public class Main {
 
         int ans = 0;
         for (int i = 0; i < n; i++) {
-            ans = Math.max(r_dp[i] + dp[n - 1 - i], ans);
+            ans = Math.max(r_dp[i] + dp[i], ans);
         }
 
         System.out.println(ans - 1);
